@@ -1,0 +1,6 @@
+Hi {{ first_name }},
+
+Your email has been successfully verified. You can now log in and use your account.
+
+Thanks,
+The Team
