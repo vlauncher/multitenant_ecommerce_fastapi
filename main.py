@@ -4,6 +4,12 @@ from dotenv import load_dotenv
 from core.db import Base, engine
 from core.celery import celery_app
 from routes.auth import router as auth_router
+from routes.stores import router as stores_router
+from routes.brands import router as brands_router
+from routes.products import router as products_router
+from routes.orders import router as orders_router
+from routes.payments import router as payments_router
+import models  # noqa: F401 ensure models imported for metadata
 
 load_dotenv()
 
@@ -45,6 +51,11 @@ app.openapi = custom_openapi
 Base.metadata.create_all(bind=engine)
 
 app.include_router(auth_router)
+app.include_router(stores_router)
+app.include_router(brands_router)
+app.include_router(products_router)
+app.include_router(orders_router)
+app.include_router(payments_router)
 
 @app.get("/health")
 async def health_check():

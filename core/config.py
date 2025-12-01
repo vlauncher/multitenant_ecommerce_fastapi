@@ -49,5 +49,14 @@ class Settings:
         # Redis/Celery settings
         self.REDIS_URL: str = get_env("REDIS_URL", "redis://localhost:6379/0")
 
+        # Paystack settings
+        self.PAYSTACK_SECRET_KEY: str = get_env("PAYSTACK_SECRET_KEY", "")
+        self.PAYSTACK_CALLBACK_URL: str = get_env("PAYSTACK_CALLBACK_URL", "")
+
+        # Google OAuth settings
+        self.GOOGLE_CLIENT_ID: str = get_env("GOOGLE_CLIENT_ID", "")
+        self.GOOGLE_CLIENT_SECRET: str = get_env("GOOGLE_CLIENT_SECRET", "")
+        self.GOOGLE_REDIRECT_URI: str = get_env("GOOGLE_REDIRECT_URI", "http://localhost:8000/auth/google/callback")
+
 
 settings = Settings()
