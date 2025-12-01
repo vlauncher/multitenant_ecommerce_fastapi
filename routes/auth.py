@@ -121,6 +121,7 @@ def change_password(
     if not verify_password(data.old_password, current_user.password_hash):
         raise HTTPException(status_code=400, detail="Old password is incorrect")
     current_user.password_hash = hash_password(data.new_password)
+    db.commit()
     return {"detail": "Password changed"}
 
 
@@ -141,6 +142,7 @@ def reset_password_confirm(data: ResetPasswordConfirm, db: Session = Depends(get
     if not ok:
         raise HTTPException(status_code=400, detail="Invalid or expired code")
     user.password_hash = hash_password(data.new_password)
+    db.commit()
     # Send password reset confirmation email
     send_templated_email(
         user.email,

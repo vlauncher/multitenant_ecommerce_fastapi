@@ -482,7 +482,7 @@ class TestAuthRoutes:
     
     def test_reset_password_confirm_email_case_insensitive(self, setup_database, test_user):
         """Test that reset password confirm email is case insensitive"""
-        with patch('services.otp.verify_code', return_value=True):
+        with patch('routes.auth.verify_code', return_value=True):
             with patch('services.otp.send_templated_email') as mock_email:
                 response = client.post("/auth/reset-password/confirm", json={
                     "email": test_user.email.upper(),  # Uppercase version
