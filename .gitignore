@@ -28,3 +28,4 @@ wheels/
 *.swo
 *~
 .DS_Store
+.env.dev
