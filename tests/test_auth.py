@@ -121,13 +121,13 @@ def test_reset_password_flow(client, mock_email_send):
     r = client.post("/auth/reset-password/request", json={"email": "rick@example.com"})
     assert r.status_code == status.HTTP_200_OK
 
-    # Use last code to reset password
-    code = _extract_last_code(mock_email_send)
+    # Use last code to reset password - get the reset OTP code (2nd email)
+    reset_code = _extract_last_code(mock_email_send)
     r = client.post(
         "/auth/reset-password/confirm",
         json={
             "email": "rick@example.com",
-            "code": code,
+            "code": reset_code,
             "new_password": "NewPortalGun123!",
         },
     )
@@ -140,11 +140,15 @@ def test_reset_password_flow(client, mock_email_send):
     )
     assert r.status_code == status.HTTP_403_FORBIDDEN
 
-    # Verify and then login
-    code = _extract_last_code(mock_email_send)
+    # Request a new OTP for verification
+    r = client.post("/auth/resend-otp", json={"email": "rick@example.com"})
+    assert r.status_code == status.HTTP_200_OK
+
+    # Use the new OTP code for verification
+    new_otp_code = _extract_last_code(mock_email_send)
     r = client.post(
         "/auth/verify-otp",
-        json={"code": code},
+        json={"code": new_otp_code},
     )
     assert r.status_code == status.HTTP_200_OK
 

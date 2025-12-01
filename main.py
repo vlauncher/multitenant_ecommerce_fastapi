@@ -9,6 +9,7 @@ from routes.brands import router as brands_router
 from routes.products import router as products_router
 from routes.orders import router as orders_router
 from routes.payments import router as payments_router
+from routes.oauth import router as oauth_router
 import models  # noqa: F401 ensure models imported for metadata
 
 load_dotenv()
@@ -56,6 +57,7 @@ app.include_router(brands_router)
 app.include_router(products_router)
 app.include_router(orders_router)
 app.include_router(payments_router)
+app.include_router(oauth_router)
 
 @app.get("/health")
 async def health_check():
