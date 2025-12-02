@@ -23,12 +23,19 @@ class Settings:
         self.DEBUG: bool = get_env("DEBUG", "False").lower() == "true"
         self.TESTING: bool = get_env("TESTING", "False").lower() == "true"
         
-        # Database configuration - switch based on DEBUG mode
-        if self.DEBUG:
+        # Database configuration - switch based on environment
+        if self.TESTING:
+            # In-memory SQLite for testing
+            self.DATABASE_URL: str = "sqlite:///:memory:"
+            self.SQLALCHEMY_ECHO: bool = False
+        elif self.DEBUG:
+            # File-based SQLite for development
             self.DATABASE_URL: str = get_env("DATABASE_URL", "sqlite:///./db.sqlite3")
+            self.SQLALCHEMY_ECHO: bool = True
         else:
-            # For production, use PostgreSQL URL from env or default
+            # PostgreSQL for production
             self.DATABASE_URL: str = get_env("POSTGRES_DATABASE_URL", "postgresql://user:password@localhost/dbname")
+            self.SQLALCHEMY_ECHO: bool = False
 
         self.JWT_SECRET: str = get_env("JWT_SECRET", "dev-secret-change")
         self.JWT_ALG: str = get_env("JWT_ALG", "HS256")

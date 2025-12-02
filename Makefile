@@ -35,12 +35,29 @@ stop:
 	@echo "Stopping Redis..."
 	pkill -f "redis-server" || true
 
-# Run tests
+# Run tests with in-memory SQLite
 test:
-	pytest tests/ -v
+	TESTING=True pytest tests/ -v
+
+# Run tests with coverage
+test-coverage:
+	TESTING=True pytest tests/ -v --cov=. --cov-report=html
+
+# Run specific test file
+test-auth:
+	TESTING=True pytest tests/test_auth.py -v
+
+test-multitenancy:
+	TESTING=True pytest tests/test_multitenancy.py -v
+
+# Run tests in watch mode (requires pytest-watch)
+test-watch:
+	TESTING=True ptw tests/ -v
 
 # Clean up
 clean:
 	find . -type f -name "*.pyc" -delete
 	find . -type d -name "__pycache__" -delete
 	rm -f *.db
+	rm -rf .pytest_cache
+	rm -rf htmlcov

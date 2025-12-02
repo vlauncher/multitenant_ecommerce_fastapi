@@ -31,14 +31,17 @@ Base.metadata.create_all(bind=engine)
 def get_current_user(
     db: Session = Depends(get_db), authorization: Optional[str] = Header(default=None, alias="Authorization")
 ) -> User:
+    """Extract and validate current user from JWT token."""
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
     token = authorization.split(" ", 1)[1]
     try:
         payload = jwt_utils.decode_access(token)
-    except Exception:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
     user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token payload")
     user = db.query(User).filter(User.id == int(user_id)).one_or_none()
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
