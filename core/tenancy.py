@@ -19,9 +19,9 @@ def resolve_domain(request: Request, x_store_domain: Optional[str] = Header(defa
     return host.split(":")[0].lower()
 
 
-def get_current_store(request: Request, db: Session = Depends(get_db)) -> Store:
+def get_current_store(request: Request, x_store_domain: Optional[str] = Header(default=None, alias="X-Store-Domain"), db: Session = Depends(get_db)) -> Store:
     """FastAPI dependency that returns the Store matching the current domain."""
-    domain = resolve_domain(request)
+    domain = resolve_domain(request, x_store_domain)
     
     # Try exact domain match first
     store = db.query(Store).filter(Store.domain == domain).one_or_none()
