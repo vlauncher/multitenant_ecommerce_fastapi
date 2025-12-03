@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Optional
 
-from sqlalchemy import String, Boolean, DateTime, ForeignKey, Table, Column, Integer
+from sqlalchemy import String, Boolean, DateTime, ForeignKey, Table, Column, Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.db import Base
@@ -29,6 +30,12 @@ class User(Base):
     is_superadmin: Mapped[bool] = mapped_column(Boolean, default=False)  # Platform admin
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Profile fields
+    bio: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    address: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    age: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    profile_picture: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)  # Cloudinary URL
     
     # Relationships
     stores = relationship("Store", secondary=user_store_roles, backref="users")

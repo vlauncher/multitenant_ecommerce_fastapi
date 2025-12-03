@@ -1,4 +1,4 @@
-.PHONY: run celery celery-dev redis dev prod test clean
+.PHONY: run celery celery-dev redis dev prod test clean docker-build docker-run docker-stop docker-clean docker-logs docker-test
 
 # Run the FastAPI app
 run:
@@ -61,3 +61,30 @@ clean:
 	rm -f *.db
 	rm -rf .pytest_cache
 	rm -rf htmlcov
+
+# Docker commands
+docker-build:
+	docker build -t multitenant-ecommerce .
+
+docker-run:
+	docker-compose up -d
+
+docker-stop:
+	docker-compose down
+
+docker-clean:
+	docker-compose down -v
+	docker system prune -f
+	docker image prune -f
+
+docker-logs:
+	docker-compose logs -f
+
+docker-test:
+	docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build --abort-on-container-exit
+
+docker-dev:
+	docker-compose up --build
+
+docker-prod:
+	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
