@@ -1,4 +1,4 @@
-.PHONY: run celery celery-dev redis dev prod test clean docker-build docker-run docker-stop docker-clean docker-logs docker-test
+.PHONY: run celery celery-dev redis dev prod test clean docker-build docker-run docker-stop docker-clean docker-logs docker-test migrate migrate-down migration-status
 
 # Run the FastAPI app
 run:
@@ -88,3 +88,19 @@ docker-dev:
 
 docker-prod:
 	docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+# Database migration commands
+migrate:
+	alembic upgrade head
+
+migrate-docker:
+	docker-compose exec web alembic upgrade head
+
+migrate-down:
+	alembic downgrade -1
+
+migration-status:
+	alembic current
+
+create-migration:
+	alembic revision --autogenerate -m "$(MSG)"
