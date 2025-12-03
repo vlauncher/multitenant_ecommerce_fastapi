@@ -3,8 +3,8 @@ from typing import Optional
 
 from dotenv import load_dotenv
 
-# Load .env.dev file specifically for development
-load_dotenv('.env.dev')
+# Load .env file
+load_dotenv('.env')
 
 
 def get_env(name: str, default: Optional[str] = None) -> str:
